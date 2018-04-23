@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.mger.service.impl.MgerMapper">
+
+
+	<select id="selectMgerList" parameterType="hashMap" resultType="hashMap"><!-- hashMap는 예약어라서 엘리어스 선언 안해도 된다 -->
+		SELECT 
+			 ID,
+			 PW,
+		    NAME,
+		    SEX,
+		    HP,
+		    ADDRESS,
+		    DELETE_YN,
+		    REG_DATE
+		FROM tb_lmk_member
+	</select>
+	
+	
+	<!-- 뷰(상세보기 -->
+	<select id="selectMgerItem" parameterType="hashMap" resultType="hashMap">
+		SELECT 
+			 PW,
+			 ID,
+		    NAME,
+		    SEX,
+		    HP,
+		    ADDRESS,
+		    DELETE_YN,
+		    REG_DATE
+		FROM tb_lmk_member
+		WHERE	ID = #{id}
+	</select>
+	
+	
+	<!-- 인서트(회원가입) -->
+	<insert id="insertMgerItem" parameterType="hashMap">
+		INSERT INTO tb_lmk_member (
+		    id,
+		    pw,
+		    name,
+		    sex,
+		    hp,
+		    address,
+		    delete_yn,
+		    reg_date
+		) VALUES (
+		    #{id},
+		    #{pw},
+		    #{name},
+		    #{sex},
+		    #{hp},
+		    #{address},
+		    #{delete_yn},
+		    sysdate
+		)
+	</insert>
+	<update id="updateMgerItem" parameterType="hashMap">
+		UPDATE tb_lmk_member
+		    SET
+		    name =#{name},
+		    sex =#{sex},
+		    hp =#{hp},
+		    address =#{address},
+		    reg_date = sysdate          
+		WHERE
+		    id =#{id}
+	
+	</update>	
+	<delete id="deleteMgerItem" parameterType="hashMap">
+	
+		DELETE FROM tb_lmk_member
+		WHERE id =#{id}	
+	
+	</delete>	
+	
+
+
+
+</mapper>

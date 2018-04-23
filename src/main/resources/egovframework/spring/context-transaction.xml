@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+    	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes><!-- 롤백이 안되게 하는 것도 있엉어서 서비스에서 @transaction이란게 있다...???? -->
+			<tx:method name="*" rollback-for="Exception"/><!-- 모든 메서드에 에러가 발생하면 롤백을 하겠다 -->
+			<!--
+			굳이 어노테이션을 사용하지 않아도 된다 
+			가급적 네이밍 룰에 따라서 아래처럼 만들어 주는게 좋다... rollback-for는 서비스에서 throws로 받는부분과 일치 시키는듯....
+			서비스 단에서  트라이 케치를 하지 않아도 된다....
+			<tx:method name="insert" rollback-for="Exception"/>메소드명이 insert로 되어 있는 곳에서 에러 발생하면 롤백을 하겠다
+			<tx:method name="update" rollback-for="Exception"/>메소드명이 insert로 되어 있는 곳에서 에러 발생하면 롤백을 하겠다 -->
+		</tx:attributes>
+	</tx:advice>
+	<!-- 트렌젝션관련...익셉션 발생되는 aop포인트.... -->
+	<aop:config>
+		<aop:pointcut id="requiredTx" expression="execution(* egovframework.example.sample..impl.*Impl.*(..))"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="requiredTx" />
+	</aop:config>
+
+</beans>
